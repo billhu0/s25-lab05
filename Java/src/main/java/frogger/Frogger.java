@@ -13,19 +13,31 @@ public class Frogger {
     
     // Field for task 2. Anything to add/change?
     private final Records records;
-    private String firstName, lastName, phoneNumber, zipCode, state, gender;
+    // private String firstName, lastName, phoneNumber, zipCode, state, gender;
+    private final FroggerID identity;
 
-    public Frogger(Road road, int position, Records records, String firstName, String lastName, String phoneNumber,
-    String zipCode, String state, String gender) {
+    // Answer: Frogger class has too many identity-related fields.
+    // There's a poor cohesion between frog movement and identity information.
+    // Therefore, we can create a record class to store identity information, which are not required to the movement.
+
+    // public Frogger(Road road, int position, Records records, String firstName, String lastName, String phoneNumber,
+    // String zipCode, String state, String gender) {
+    //     this.road = road;
+    //     this.position = position;
+    //     this.records = records;
+    //     this.firstName = firstName;
+    //     this.lastName = lastName;
+    //     this.phoneNumber = phoneNumber;
+    //     this.zipCode = zipCode;
+    //     this.state = state;
+    //     this.gender = gender;
+    // }
+
+    public Frogger(Road road, int position, Records records, FroggerID identity) {
         this.road = road;
         this.position = position;
         this.records = records;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phoneNumber = phoneNumber;
-        this.zipCode = zipCode;
-        this.state = state;
-        this.gender = gender;
+        this.identity = identity;
     }
 
     /**
@@ -36,7 +48,7 @@ public class Frogger {
      */
     public boolean move(boolean forward) {
         int nextPosition = this.position + (forward ? 1 : -1);
-        if (!isValid(nextPosition) || isOccupied(nextPosition)) {
+        if (!road.isValidPosition(nextPosition) || road.isOccupied(nextPosition)) {
             return false;
         }
         this.position = nextPosition;
@@ -44,25 +56,45 @@ public class Frogger {
     }
 
     // TODO: Do you notice any issues here?
-    public boolean isOccupied(int position) {
-        boolean[] occupied = this.road.getOccupied();
-        return occupied[position];
-    }
+    // Answer: Frogger class is too dependent on Road's internal implementation.
+    // This means we are not distributing knowledge (responsibility) properly.
+    // Fix: move that logic to Road class.
     
-    public boolean isValid(int position) {
-        if (position < 0) return false;
-        boolean[] occupied = this.road.getOccupied();
-        return position < occupied.length;
-    }
+    // Below is the original code:
+    // It has been deleted.
+    // public boolean isOccupied(int position) {
+    //     boolean[] occupied = this.road.getOccupied();
+    //     return occupied[position];
+    // }
+    
+    // Answer: move that logic to Road class.
+    // Because it is not the responsibility of Frogger to know if a position is occupied.
+
+    // Below is the original code:
+    // It has been deleted.
+    // public boolean isValid(int position) {
+    //     if (position < 0) return false;
+    //     boolean[] occupied = this.road.getOccupied();
+    //     return position < occupied.length;
+    // }
 
     /**
      * Records Frogger to the list of records.
      * 
      * @return true if record successful, else false.
      */
+    // Answer: modified accordingly.
     public boolean recordMyself() {
-      boolean success = records.addRecord(firstName, lastName, phoneNumber, zipCode, state, gender);
-      return success;
+    //   boolean success = records.addRecord(firstName, lastName, phoneNumber, zipCode, state, gender);
+    //   return success;
+        return records.addRecord(
+            identity.firstName(),
+            identity.lastName(),
+            identity.phoneNumber(),
+            identity.zipCode(),
+            identity.state(),
+            identity.gender()
+        );
     }
 
 }
